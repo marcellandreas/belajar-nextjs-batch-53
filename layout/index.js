@@ -15,7 +15,9 @@ export default function Layout({ children, metaTitle, metaDescription }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      {children}
+      <main className=" min-h-screen flex-col gap-4 flex justify-center items-center">
+        {children}
+      </main>
       <Footer />
     </div>
   );

@@ -2,7 +2,7 @@ export default function Menu({ isOpen }) {
   return (
     <div className="flex items-center gap-3 text-xl">
       <a
-        href="/home"
+        href="/"
         className=" hover:underline hover:text-gray-400 font-semibold"
       >
         Home
