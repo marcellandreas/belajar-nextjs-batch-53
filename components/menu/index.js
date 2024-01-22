@@ -14,13 +14,13 @@ export default function Menu({ isOpen }) {
         Profile
       </a>
       <a
-        href="/profile"
+        href="/blog"
         className=" hover:underline hover:text-gray-400 font-semibold"
       >
         Blog
       </a>
       <a
-        href="/profile"
+        href="/contact"
         className=" hover:underline hover:text-gray-400 font-semibold"
       >
         Contact
