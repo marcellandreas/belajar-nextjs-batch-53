@@ -1,10 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import Layout from "@/layout";
-
-const inter = Inter({ subsets: ["latin"] });
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -17,6 +13,9 @@ export default function Home() {
       </Head>
       <Layout metaTitle="Marcell">
         <h3>ini halaman Home</h3>
+        <Link href="/users" className="bg-gray-200 p-2 rounded-xl ">
+          Tugas ke 8 - Dynamic Router App
+        </Link>
       </Layout>
     </>
   );
