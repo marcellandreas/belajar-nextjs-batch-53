@@ -1,8 +1,23 @@
 import Head from "next/head";
 import Layout from "@/layout";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import CardApi from "@/components/Card";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch("api/hello")
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setData(res.users);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  console.log(data);
   return (
     <>
       <Head>
@@ -16,6 +31,14 @@ export default function Home() {
         <Link href="/users" className="bg-gray-200 p-2 rounded-xl ">
           Tugas ke 8 - Dynamic Router App
         </Link>
+        <section className=" bg-gray-200/30 w-full">
+          <h3>Tugas Harian 9</h3>
+          <div className="flex gap-2 flex-wrap justify-center items-center">
+            {data.slice(0, 6).map((data) => (
+              <CardApi key={data.id} card={data} />
+            ))}
+          </div>
+        </section>
       </Layout>
     </>
   );
