@@ -1,9 +1,13 @@
 import Head from "next/head";
-import Layout from "@/layout";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CardApi from "@/components/Card";
 import { useRouter } from "next/router";
+
+import dynamic from "next/dynamic";
+
+const LayoutComponent = dynamic(() => import("@/layout"));
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -26,7 +30,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout metaTitle="Marcell">
+      <LayoutComponent metaTitle="Marcell">
         <h3>ini halaman Home</h3>
         <Link href="/users" className="bg-gray-200 p-2 rounded-xl ">
           Tugas ke 8 - Dynamic Router App
@@ -39,7 +43,14 @@ export default function Home() {
             ))}
           </div>
         </section>
-      </Layout>
+        <section>
+          <h3>Tugas Harian 10</h3>
+          <div className="flex gap-2 max-h-36">
+            <Image src="/img.jpg" width={400} height={400} />
+            <img src="/img.jpg" style={{ width: 400 }} />
+          </div>
+        </section>
+      </LayoutComponent>
     </>
   );
 }

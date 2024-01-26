@@ -1,7 +1,7 @@
 const CardApi = ({ card }) => {
   return (
     <div className="max-w-sm  overflow-hidden shadow-lg flex flex-col justify-center p-12 rounded-xl">
-      <img className=" text-center max-h-[200px]" src={card.image} alt="Card" />
+      <img className="text-center max-h-[200px]" src={card.image} alt="Card" />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{card.username}</div>
         <p className="text-gray-700 text-base">
