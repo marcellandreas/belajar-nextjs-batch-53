@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 const Notes = () => {
   const router = useRouter();
   const [notes, setNotes] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     async function fecthData() {
       const res = await fetch(
@@ -27,10 +28,33 @@ const Notes = () => {
       );
       const listNotes = await res.json();
       setNotes(listNotes);
+      // setIsLoading(false);
     }
 
     fecthData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(
+        `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const result = await res.json();
+      if (result?.success) {
+        router.reload();
+        // setIsLoading(true);
+        alert(`${id} berhasil dihapus`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -69,10 +93,22 @@ const Notes = () => {
                     borderTopWidth="1px"
                     borderColor="gray.200"
                   >
-                    <Button variant="ghost" colorScheme="blue">
+                    <Button
+                      onClick={() => {
+                        router.push(`/notes/edit/${data.id}`);
+                      }}
+                      variant="ghost"
+                      colorScheme="blue"
+                    >
                       Edit
                     </Button>
-                    <Button variant="ghost" colorScheme="red">
+                    <Button
+                      onClick={() => {
+                        handleDelete(data.id);
+                      }}
+                      variant="ghost"
+                      colorScheme="red"
+                    >
                       Hapus
                     </Button>
                   </Flex>
