@@ -17,8 +17,10 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { UseMutation } from "@/hooks/useMutation";
 
 const AddNotes = () => {
+  const { mutationData } = UseMutation();
   const router = useRouter();
   const [notes, setNotes] = useState({
     title: "",
@@ -33,24 +35,12 @@ const AddNotes = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const res = await fetch(
-        "https://paace-f178cafcae7b.nevacloud.io/api/notes",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(notes),
-        }
-      );
-      const result = await res.json();
-      console.log(result);
-      if (result?.success) {
-        router.push("/notes");
-      }
-    } catch (error) {
-      console.log(error);
+    const response = await mutationData({
+      url: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+      payload: notes,
+    });
+    if (response?.success) {
+      router.push("/notes");
     }
   };
 

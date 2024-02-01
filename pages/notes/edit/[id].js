@@ -17,10 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { UseMutation } from "@/hooks/useMutation";
 
 const EditNotes = () => {
   const router = useRouter();
-
+  const { mutationData } = UseMutation();
   const { id } = router?.query;
   const [notes, setNotes] = useState({
     title: "",
@@ -50,25 +51,17 @@ const EditNotes = () => {
   }, [id]);
 
   const handleSubmit = async () => {
-    try {
-      const res = await fetch(
-        `https://paace-f178cafcae7b.nevacloud.io/api/notes/update/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(notes),
-        }
-      );
-      const result = await res.json();
-      console.log(result);
-      if (result?.success) {
-        router.push("/notes");
-      }
-    } catch (error) {
-      console.log(error);
+    const response = await mutationData({
+      url: `https://paace-f178cafcae7b.nevacloud.io/api/notes/update/${id}`,
+      method: "PATCH",
+      payload: notes,
+    });
+
+    if (response?.success) {
+      router.push("/notes");
     }
+
+    console.log(response);
   };
 
   console.log("ini notes", notes);

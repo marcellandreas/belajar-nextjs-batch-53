@@ -1,58 +1,51 @@
 import dynamic from "next/dynamic";
-import Link from "next/link";
 const LayoutComponent = dynamic(() => import("@/layout"));
 import {
   Grid,
   GridItem,
   Flex,
   Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Heading,
   Text,
   Button,
   Box,
+  Spinner,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import { UseQueries } from "@/hooks/useQueries";
+import { UseMutation } from "@/hooks/useMutation";
 
 const Notes = () => {
   const router = useRouter();
-  const [notes, setNotes] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    async function fecthData() {
-      const res = await fetch(
-        "https://paace-f178cafcae7b.nevacloud.io/api/notes"
-      );
-      const listNotes = await res.json();
-      setNotes(listNotes);
-      // setIsLoading(false);
-    }
+  const { mutationData } = UseMutation();
+  const { data, isLoading } = UseQueries({
+    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+  });
 
-    fecthData();
-  }, []);
+  // const [isLoading, setIsLoading] = useState(false);
+  // useEffect(() => {
+  //   async function fecthData() {
+  //     const res = await fetch(
+  //       "https://paace-f178cafcae7b.nevacloud.io/api/notes"
+  //     );
+  //     const listNotes = await res.json();
+  //     setNotes(listNotes);
+  //     // setIsLoading(false);
+  //   }
+
+  //   fecthData();
+  // }, []);
 
   const handleDelete = async (id) => {
-    try {
-      const res = await fetch(
-        `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      );
-      const result = await res.json();
-      if (result?.success) {
-        router.reload();
-        // setIsLoading(true);
-        alert(`${id} berhasil dihapus`);
-      }
-    } catch (error) {
-      console.log(error);
+    const response = await mutationData({
+      url: `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
+      method: "DELETE",
+    });
+
+    if (response?.success) {
+      router.reload();
+      alert(`${id} berhasil dihapus`);
     }
   };
 
@@ -69,53 +62,65 @@ const Notes = () => {
               Add Note
             </Button>
           </Flex>
-          <Grid templateColumns="repeat(3, 1fr)" gap={5}>
-            {notes.data?.map((data) => (
-              <GridItem key={data.id}>
-                <Card
-                  borderWidth="1px"
-                  borderRadius="md"
-                  overflow="hidden"
-                  _hover={{ transform: "scale(0.9)" }}
-                >
-                  <Box p={4}>
-                    <Heading fontSize="xl" fontWeight="semibold" mb={2}>
-                      {data.title}
-                    </Heading>
-                    <Text textAlign={"justify"} color="gray.500">
-                      {data.description}
-                    </Text>
-                  </Box>
-                  <Flex
-                    justifyContent="space-between"
-                    align="center"
-                    p={4}
-                    borderTopWidth="1px"
-                    borderColor="gray.200"
+          {isLoading ? (
+            <Flex alignItems="center" justifyContent="center">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Flex>
+          ) : (
+            <Grid templateColumns="repeat(3, 1fr)" gap={5}>
+              {data.data?.map((data) => (
+                <GridItem key={data.id}>
+                  <Card
+                    borderWidth="1px"
+                    borderRadius="md"
+                    overflow="hidden"
+                    _hover={{ transform: "scale(0.9)" }}
                   >
-                    <Button
-                      onClick={() => {
-                        router.push(`/notes/edit/${data.id}`);
-                      }}
-                      variant="ghost"
-                      colorScheme="blue"
+                    <Box p={4}>
+                      <Heading fontSize="xl" fontWeight="semibold" mb={2}>
+                        {data.title}
+                      </Heading>
+                      <Text textAlign={"justify"} color="gray.500">
+                        {data.description}
+                      </Text>
+                    </Box>
+                    <Flex
+                      justifyContent="space-between"
+                      align="center"
+                      p={4}
+                      borderTopWidth="1px"
+                      borderColor="gray.200"
                     >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        handleDelete(data.id);
-                      }}
-                      variant="ghost"
-                      colorScheme="red"
-                    >
-                      Hapus
-                    </Button>
-                  </Flex>
-                </Card>
-              </GridItem>
-            ))}
-          </Grid>
+                      <Button
+                        onClick={() => {
+                          router.push(`/notes/edit/${data.id}`);
+                        }}
+                        variant="ghost"
+                        colorScheme="blue"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleDelete(data.id);
+                        }}
+                        variant="ghost"
+                        colorScheme="red"
+                      >
+                        Hapus
+                      </Button>
+                    </Flex>
+                  </Card>
+                </GridItem>
+              ))}
+            </Grid>
+          )}
         </Flex>
       </LayoutComponent>
     </>
@@ -123,3 +128,22 @@ const Notes = () => {
 };
 
 export default Notes;
+
+// try {
+//   const res = await fetch(
+//     `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
+//     {
+//       method: "DELETE",
+//       headers: {
+//         "Content-type": "application/json",
+//       },
+//     }
+//   );
+//   const result = await res.json();
+//   if (result?.success) {
+//     router.reload();
+//     alert(`${id} berhasil dihapus`);
+//   }
+// } catch (error) {
+//   console.log(error);
+// }
